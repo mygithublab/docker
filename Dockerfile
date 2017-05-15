@@ -14,7 +14,7 @@ RUN cd /tmp/nagios-plugins-2.1.1 && ./configure --with-nagios-user=nagios --with
 
 RUN chkconfig --add nagios && chkconfig nagios on && chkconfig httpd on
 RUN /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
-RUN service httpd start && service nagios start  && service ssh start
+RUN service httpd start && service nagios start  && service sshd start
 
 RUN htpasswd -bc /usr/local/nagios/etc/htpasswd.users nagiosadmin nagios
 RUN touch /var/www/html/index.html
