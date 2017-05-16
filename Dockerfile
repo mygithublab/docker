@@ -19,7 +19,7 @@ RUN /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
 
 RUN touch /var/www/html/index.html
 
-#EXPOSE 80  
+EXPOSE 80  
 #ENTRYPOINT ["/bin/bash","/run.sh"]
 
 CMD ["/run.sh"]
