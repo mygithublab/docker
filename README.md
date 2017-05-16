@@ -5,7 +5,7 @@ docker for nagios
 
 docker build -t nagios .
 
-docker run -d -P --name=nagios nagios
+docker run -itd -P --name=nagios nagios
 
 docker ps -a
 
