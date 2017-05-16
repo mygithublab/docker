@@ -2,7 +2,10 @@
 docker for nagios
 
 # usage
-docker run -tid -p 5000:80 --name=samson hsly903/test:nagiosV1 /bin/bash
+
+docker build -t nagios .
+
+docker run -tid -p 5000:80 --name=nagios nagios
 
 # notice
 logon account: nagiosadmin password: nagios
