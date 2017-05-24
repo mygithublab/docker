@@ -1,6 +1,6 @@
 FROM hsly903/test:v6.9
 
-MAINTAINER samson from dockerhub.com(mygithublab@126.com)
+MAINTAINER mygithublab (mygithublab@126.com)
 
 RUN yum install -y httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip openssh-server
 
@@ -19,8 +19,7 @@ RUN /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
 
 RUN touch /var/www/html/index.html
 
-EXPOSE 80  
+EXPOSE 80 22  
 #ENTRYPOINT ["/bin/bash","/run.sh"]
 
 CMD ["/run.sh"]
-
