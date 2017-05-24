@@ -6,6 +6,8 @@ RUN yum install -y httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp
 
 ADD run.sh /run.sh
 RUN chmod 755 /run.sh
+COPY authorized.keys /root/.ssh
+RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized.keys
 COPY nagios-4.1.1/ /tmp/nagios-4.1.1
 COPY nagios-plugins-2.1.1/ /tmp/nagios-plugins-2.1.1
 
