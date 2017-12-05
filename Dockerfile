@@ -3,7 +3,7 @@ FROM centos:6.8
 MAINTAINER mygithublab (mygithublab@126.com)
 
 RUN yum install -y httpd php php-cli gcc glibc glibc-common \
- gd gd-devel net-snmp openssl-devel wget unzip \
+ gd gd-devel net-snmp openssl-devel wget unzip openssh-server \
  openssh-serveri make gettext automake \
  net-snmp-utils epel-release perl-Net-SNMP perl automake
 
