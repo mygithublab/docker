@@ -34,7 +34,7 @@ RUN cd /tmp && useradd nagios && usermod -a -G nagios apache \
  && make install-commandmode && make install-config && make install-webconf \
  && htpasswd -bc /usr/local/nagios/etc/htpasswd.users nagiosadmin nagios \
  && cd /tmp && tar zxvf nagios-plugins.tar.gz && cd /tmp/nagios-plugins-release-2.2.1/ \
- && ./tools/setup && ./configure && make && make install 
+ && ./tools/setup && ./configure && make && make install \
  && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
  && touch /var/www/html/index.html && rm -rf /tmp/*
 
