@@ -1,6 +1,8 @@
 FROM centos:6.8 
 
-MAINTAINER mygithublab (mygithublab@126.com)
+MAINTAINER SamsonMei (mygithublab@126.com)
+
+#Install Prerequisites Software
 
 RUN yum install -y \
  httpd \
@@ -25,7 +27,9 @@ RUN yum install -y \
  perl \
  automake
 
-RUN cd /tmp && useradd nagios && usermod -a -G nagios apache \
+#Download and Install Nagios Core 4.3.4
+
+RUN useradd nagios && usermod -a -G nagios apache && cd /tmp \ 
  && wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.3.4.tar.gz \
  && wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz \
  && tar xzvf nagioscore.tar.gz && cd /tmp/nagioscore-nagios-4.3.4/ \
@@ -36,15 +40,16 @@ RUN cd /tmp && useradd nagios && usermod -a -G nagios apache \
  && cd /tmp && tar zxvf nagios-plugins.tar.gz && cd /tmp/nagios-plugins-release-2.2.1/ \
  && ./tools/setup && ./configure && make && make install \
  && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
- && touch /var/www/html/index.html && rm -rf /tmp/*
+ && touch /var/www/html/index.html && rm -rf /tmp/* && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 #Add startup service script
+
 ADD run.sh /run.sh
 RUN chmod 755 /run.sh && mkdir -p /root/.ssh
 COPY authorized_keys /root/.ssh
 RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys
-
 EXPOSE 80 22  
-#ENTRYPOINT ["/bin/bash","/run.sh"]
+
+#ENTRYPOINT ["executable","/run.sh"]
 
 CMD ["/run.sh"]
