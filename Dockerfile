@@ -40,11 +40,7 @@ RUN useradd nagios && usermod -a -G nagios apache && cd /tmp \
  && cd /tmp && tar zxvf nagios-plugins.tar.gz && cd /tmp/nagios-plugins-release-2.2.1/ \
  && ./tools/setup && ./configure && make && make install \
  && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
-<<<<<<< HEAD
  && touch /var/www/html/index.html && rm -rf /tmp/* && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime
-=======
- && touch /var/www/html/index.html && rm -rf /tmp/* && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
->>>>>>> 683f75e4f505ce537ab72bef4054cccee64e0ec3
 
 #Add startup service script
 
