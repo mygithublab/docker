@@ -14,3 +14,11 @@ Copy nagios_container.ppk into Putty, then set Auto-login username: root, input 
 # NOTICE
 logon account: nagiosadmin password: nagios
 
+# SAVE IMAGE
+docker save -o image.tar image:target
+
+# LOAD IMAGE
+docker load --input image.tar ; or docker load < image.tar
+
+# UPLOAD IMAGE
+docker push NAME[:TAG]
