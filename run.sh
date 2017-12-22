@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/etc/init.d/sshd start && /etc/init.d/nagios start && /etc/init.d/httpd start && /bin/bash
+/etc/init.d/sshd restart && /etc/init.d/nagios restart && /etc/init.d/httpd restart && /bin/bash
 
