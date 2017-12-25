@@ -12,7 +12,7 @@ create local folder tree as below
 ├── libexec
 └── var
 
-docker run -itd -p 3000:80 -P 3001:22 --name=nagios_centos \
+docker run -itd -p 3002:80 -p 3003:22 --name=nagios_centos \
     -v /nagios/etc:/usr/local/nagios/etc \
     -v /nagios/libexec:/usr/local/nagios/libexec \
     -v /nagios/var:/usr/local/nagios/var \
