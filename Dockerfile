@@ -79,7 +79,7 @@ RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys
 EXPOSE 80 22  
 
 #Export container folder
-VOLUME "/usr/local/nagios/etc" "/usr/local/nagios/libexec" "/usr/local/nagios/var"
+VOLUME "/mnt"
 
 #ENTRYPOINT ["executable","/run.sh"]
 CMD ["/run.sh"]
