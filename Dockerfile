@@ -33,7 +33,7 @@ RUN yum install -y \
  epel-release \
  perl-Net-SNMP \
 #Install SSH 
- openssh-server \
+ openssh-server 
 
 #Download and Install Nagios Core 4.3.4
 #Create User And Group

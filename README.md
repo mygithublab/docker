@@ -3,9 +3,20 @@ docker for nagios deployment
 
 # USAGE
 
-docker build -t (IMAGE Nname:Target) .
+docker build -t nagios_v1 .
 
-docker run -itd -p 3000:80 -P 3001:22 --name=(CONTAINER NAME) -v localfolderPath:containerPath imageName
+create local folder tree as below
+
+/nagios
+├── etc
+├── libexec
+└── var
+
+docker run -itd -p 3000:80 -P 3001:22 --name=nagios_centos \
+    -v /nagios/etc:/usr/local/nagios/etc \
+    -v /nagios/libexec:/usr/local/nagios/libexec \
+    -v /nagios/var:/usr/local/nagios/var \
+    nagios_v1
 
 docker ps -a
 
