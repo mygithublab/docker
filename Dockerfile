@@ -55,7 +55,9 @@ RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpa
 #Create User And Group
  useradd nagios && usermod -a -G nagios apache && cd /tmp && \ 
 #Downloading the Source of nagios core
- wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.3.4.tar.gz && \
+ wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.3.4.tar.gz && \
+#Downloading the Source of nagiosgraph
+ wget --no-check-certificate -O nagiosgraph.tar.gz https://nchc.dl.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz && \
 #Downloading the Source of nagios-plugin
  wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz && \
  tar xzvf nagioscore.tar.gz && cd /tmp/nagioscore-nagios-4.3.4/ && \
@@ -82,8 +84,27 @@ RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpa
  ./tools/setup && ./configure && make && make install && \
 #Check and test nagios configure file
  /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg && \
+
 #Create index.html file and setup Shanghai timezone
- touch /var/www/html/index.html && rm -rf /tmp/* && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime
+ touch /var/www/html/index.html && rm -rf /tmp/* && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime && \
+#Install the Source of nagiosgraph
+ cd /tmp && tar zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 && \
+ ./install.pl --install                                                 \
+         --prefix                   /usr/local/nagiosgraph              \
+         --etc-dir                  /usr/local/nagiosgraph/etc          \
+         --var-dir                  /usr/local/nagiosgraph/var          \
+         --log-dir                  /usr/local/nagiosgraph/var/log      \
+         --doc-dir                  /usr/local/nagiosgraph/doc          \
+         --nagios-cgi-url           /nagiosgraph/cgi-bin                \
+         --nagios-perfdata-file     /tmp/perfdata.log                   \
+         --nagios-user              nagios                              \ 
+         --www-user                 apache                           && \
+#        --prefix /opt/nagiosgraph                               \
+#        --nagios-user nagios                                    \
+#        --www-user apache                                       \
+#        --nagios-perfdata-file /tmp/perfdata.log                \
+#        --nagios-cgi-url /nagiosgraph/cgi-bin                && \
+ cp share/nagiosgraph.ssi /usr/local/nagios/share/ssi/common-header.ssi 
 
 #Add startup service script
 ADD run.sh /run.sh
