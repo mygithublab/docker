@@ -47,7 +47,7 @@ RUN yum install -y \
 #Prerequisties for HP ilo2 health
  perl-XML-Simple \
  perl-IO-Socket-SSL \
- perl-Nagios-Plugin \
+ perl-Nagios-Plugin 
  
 #Download and Install Nagios Core 4.3.4
 #Install and setup Nagios::Config perl module 
