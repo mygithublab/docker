@@ -46,14 +46,14 @@ RUN yum install -y \
  bc \
 #Prerequisties for HP ilo2 health
  perl-XML-Simple \
- nagios-plugins-perl \
- perl-IO-Socket-SSL 
-
+ perl-IO-Socket-SSL \
+ perl-Nagios-Plugin \
+ 
 #Download and Install Nagios Core 4.3.4
-#Install and setup Nagios::Config perl module and Prerequisties for HP ilo2 health
-RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpanm Nagios::Config
+#Install and setup Nagios::Config perl module 
+RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpanm Nagios::Config && \
 #Create User And Group
-RUN useradd nagios && usermod -a -G nagios apache && cd /tmp && \ 
+ useradd nagios && usermod -a -G nagios apache && cd /tmp && \ 
 #Downloading the Source of nagios core
  wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.3.4.tar.gz && \
 #Downloading the Source of nagios-plugin
