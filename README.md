@@ -5,14 +5,7 @@ docker for nagios deployment
 
 docker build -t nagios_v1 .
 
-create local folder tree as below
-
-/nagios
-├── etc
-├── libexec
-└── var
-
-docker run -itd -p 4000:80 -p 4001:22 --name nagios_centos -v /mnt:/mnt nagios_v1
+docker run -itd -p 4000:80 -p 4001:22 --name nagiosgraph -v /mnt:/mnt nagios_v1
 
 docker ps -a
 
