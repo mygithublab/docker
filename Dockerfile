@@ -32,10 +32,22 @@ RUN yum install -y \
  net-snmp-utils \
  epel-release \
  perl-Net-SNMP \
-#Install SSH 
- openssh-server 
+#Install SSH git
+ openssh-server \ 
+ git \
+#Prerequisties for nagiosgraph
+ perl-rrdtool \
+ perl-GD \
+ perl-CPAN \
+ perl-CGI \
+ perl-Time-HiRes \
+#Prerequisties for SNMP Printer checking
+ php-snmp \
+ bc 
 
 #Download and Install Nagios Core 4.3.4
+#Install and setup Nagios::Config perl module
+RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpanm Nagios::Config
 #Create User And Group
 RUN useradd nagios && usermod -a -G nagios apache && cd /tmp && \ 
 #Downloading the Source of nagios core
