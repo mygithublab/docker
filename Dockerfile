@@ -84,9 +84,6 @@ RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpa
  ./tools/setup && ./configure && make && make install && \
 #Check and test nagios configure file
  /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg && \
-
-#Create index.html file and setup Shanghai timezone
- touch /var/www/html/index.html && rm -rf /tmp/* && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime && \
 #Install the Source of nagiosgraph
  cd /tmp && tar zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 && \
  ./install.pl --install                                                 \
@@ -104,13 +101,40 @@ RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpa
 #        --www-user apache                                       \
 #        --nagios-perfdata-file /tmp/perfdata.log                \
 #        --nagios-cgi-url /nagiosgraph/cgi-bin                && \
- cp share/nagiosgraph.ssi /usr/local/nagios/share/ssi/common-header.ssi 
+ cp share/nagiosgraph.ssi /usr/local/nagios/share/ssi/common-header.ssi && \
+#Create index.html file and setup Shanghai timezone
+ touch /var/www/html/index.html && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime && rm -rf /tmp/*
 
 #Add startup service script
 ADD run.sh /run.sh
 RUN chmod 755 /run.sh && mkdir -p /root/.ssh
 COPY authorized_keys /root/.ssh
 RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys
+
+#Add configure file to nagios server
+ADD cfg/httpd/httpd.conf /etc/httpd/conf/httpd.conf
+ADD cfg/nagiosgraph/etc/nagiosgraph-apache.conf /usr/local/nagiosgraph/etc/nagiosgraph-apache.conf
+ADD cfg/nagios/etc/cgi.cfg /usr/local/nagios/etc/cgi.cfg
+ADD cfg/nagios/etc/nagios.cfg /usr/local/nagios/etc/nagios.cfg
+ADD cfg/nagios/objects/commands.cfg /usr/local/nagios/etc/objects/commands.cfg
+ADD cfg/nagios/objects/templates.cfg /usr/local/nagios/etc/objects/templates.cfg
+
+#Add plugin to nagios server
+ADD plugins/check_ilo2_health.pl /usr/local/nagios/libexec/check_ilo2_health.pl
+ADD plugins/check_snmp_printer /usr/local/nagios/libexec/check_snmp_printer
+
+#Change above file permission
+
+RUN chmod 755 /usr/local/nagios/libexec/check_ilo2_health.pl && \
+    chmod 755 /usr/local/nagios/libexec/check_snmp_printer   && \
+    chown nagios.nagios /usr/local/nagios/etc/cgi.cfg           \
+    /usr/local/nagios/etc/nagios.cfg                            \
+    /usr/local/nagios/etc/objects/commands.cfg                  \
+    /usr/local/nagios/etc/objects/templates.cfg              && \ 
+    chmod 664 /usr/local/nagios/etc/cgi.cfg                     \
+    /usr/local/nagios/etc/nagios.cfg                            \
+    /usr/local/nagios/etc/objects/commands.cfg                  \
+    /usr/local/nagios/etc/objects/templates.cfg              
 
 #Export service ports
 EXPOSE 80 22  
