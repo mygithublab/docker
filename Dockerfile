@@ -118,6 +118,7 @@ ADD cfg/nagios/etc/cgi.cfg /usr/local/nagios/etc/cgi.cfg
 ADD cfg/nagios/etc/nagios.cfg /usr/local/nagios/etc/nagios.cfg
 ADD cfg/nagios/objects/commands.cfg /usr/local/nagios/etc/objects/commands.cfg
 ADD cfg/nagios/objects/templates.cfg /usr/local/nagios/etc/objects/templates.cfg
+ADD cfg/nagios/objects/test.cfg /usr/local/nagios/etc/objects/test.cfg
 
 #Add plugin to nagios server
 ADD plugins/check_ilo2_health.pl /usr/local/nagios/libexec/check_ilo2_health.pl
@@ -134,7 +135,8 @@ RUN chmod 755 /usr/local/nagios/libexec/check_ilo2_health.pl && \
     chmod 664 /usr/local/nagios/etc/cgi.cfg                     \
     /usr/local/nagios/etc/nagios.cfg                            \
     /usr/local/nagios/etc/objects/commands.cfg                  \
-    /usr/local/nagios/etc/objects/templates.cfg              
+    /usr/local/nagios/etc/objects/templates.cfg                 \
+    /usr/local/nagios/etc/objects/test.cfg
 
 #Export service ports
 EXPOSE 80 22  
