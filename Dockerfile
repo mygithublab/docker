@@ -31,7 +31,7 @@ RUN yum install -y \
  net-snmp \
  net-snmp-utils \
  epel-release \
- perl-Net-SNMP \
+##perl-Net-SNMP \
 #Install SSH git
  openssh-server \ 
  git \
@@ -47,7 +47,11 @@ RUN yum install -y \
 #Prerequisties for HP ilo2 health
  perl-XML-Simple \
  perl-IO-Socket-SSL \
- perl-Nagios-Plugin 
+##perl-Nagios-Plugin 
+ && yum install -y \
+ perl-Net-SNMP \
+ perl-Nagios-Plugin \
+ && yum clean all 
  
 #Download and Install Nagios Core 4.3.4
 #Install and setup Nagios::Config perl module 
