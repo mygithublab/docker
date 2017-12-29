@@ -3,7 +3,7 @@ docker for nagios deployment
 
 # USAGE
 
-(Assume Host IP is 192.168.1.100, host sharefolder locat in /mnt)
+(Assume Host IP is 192.168.1.100, host sharefolder locate in /mnt)
 
 docker build -t nagios .
 
