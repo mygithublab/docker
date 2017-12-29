@@ -5,9 +5,9 @@ docker for nagios deployment
 
 (Assume Host IP is 192.168.1.100, host sharefolder locat in /mnt)
 
-docker build -t nagios_v1 .
+docker build -t nagios .
 
-docker run -itd -p 4000:80 -p 4001:22 --name nagiosgraph -v /mnt:/mnt nagios_v1
+docker run -itd -p 4000:80 -p 4001:22 --name nagiosgraph -v /mnt:/mnt nagios
 
 docker ps -a
 
