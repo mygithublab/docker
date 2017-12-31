@@ -1,16 +1,20 @@
-#This dockerfile uses the ubuntu image
+#This dockerfile uses the centos image
 #Author: docker_user
-#Nagios core with centos
+#Nagios core with Nagiosgraph
 
-#Base image
+#Basic image
 FROM centos:6.8 
 
 #Maintainer information
 MAINTAINER SamsonMei (mygithublab@126.com)
 
+#Setup environment
+ENV NAGIOSADMIN_USER   nagiosadmin
+ENV NAGIOSADMIN_PASS   nagios
+
 #Install Prerequisites Software
 RUN yum install -y \
-#Prerequisties for nagios core
+#Prerequisties software for nagios core
     gcc \
     glibc \
     php-cli \
@@ -22,7 +26,7 @@ RUN yum install -y \
     gd \
     gd-devel \
     perl \
-#Prerequisties for nagios-plugin 
+#Prerequisties software for nagios-plugin 
     make \
     gettext \
     automake \
@@ -32,19 +36,19 @@ RUN yum install -y \
     net-snmp-utils \
     epel-release \
 ##perl-Net-SNMP \
-#Install SSH git
+#Prerequisties software for SSH git
     openssh-server \ 
     git \
-#Prerequisties for nagiosgraph
+#Prerequisties softeare for nagiosgraph
     perl-rrdtool \
     perl-GD \
     perl-CPAN \
     perl-CGI \
     perl-Time-HiRes \
-#Prerequisties for SNMP Printer checking
+#Prerequisties software for SNMP Printer checking
     php-snmp \
     bc \
-#Prerequisties for HP ilo2 health
+#Prerequisties software for HP ilo2 health
     perl-XML-Simple \
     perl-IO-Socket-SSL \
 ##perl-Nagios-Plugin 
@@ -77,14 +81,14 @@ RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpa
  && make install-config \
 #Install Apache Config Files
  && make install-webconf \
-#Configure Firewall
+#Configure Firewall for Nagios Core
 #&& iptables -I INPUT -p tcp --destination-port 80 -j ACCEPT && service iptables save \
 #&& ip6tables -I INPUT -p tcp --destination-port 80 -j ACCEPT && service ip6tables save \
 #Create nagiosadmin User Account
- && htpasswd -bc /usr/local/nagios/etc/htpasswd.users nagiosadmin nagios \
+ && htpasswd -bcs /usr/local/nagios/etc/htpasswd.users "${NAGIOSADMIN_USER}" "${NAGIOSADMIN_PASS}" \
 #Navigate to tmp folder and extract nagios-plugin
  && cd /tmp && tar zxvf nagios-plugins.tar.gz && cd /tmp/nagios-plugins-release-2.2.1/ \
-#Compile + Install
+#Compile + Install for nagios-plugin
  && ./tools/setup && ./configure && make && make install \
 #Check and test nagios configure file
  && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
