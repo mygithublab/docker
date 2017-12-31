@@ -1,5 +1,9 @@
 # DOCKER
-docker for nagios deployment
+Docker for nagios deployment
+
+Build Status: [![Build Status](https://travis-ci.org/mygithublab/docker.svg?branch=master)](https://travis-ci.org/mygithublab/docker)
+
+Nagios Core 4.3.4 with Nagiosgraph
 
 ### USAGE
 
