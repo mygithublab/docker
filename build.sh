@@ -9,7 +9,7 @@ docker build -t "${DOCKER_IMAGE_NAME}" .
 
 docker images
 
-docker run -itd --name "${DOCKER_CONTAINER_NAME}" -p 4000:80 -p 4001:22 -v /mnt:/mnt -t "${DOCKER_IMAGE_NAME}"
+docker run -itd --name "${DOCKER_CONTAINER_NAME}" -p 4000:80 -v /mnt:/mnt -t "${DOCKER_IMAGE_NAME}"
 
 docker ps -a
 
