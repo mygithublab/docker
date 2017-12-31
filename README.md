@@ -42,3 +42,8 @@ docker load --input image.tar ; or docker load < image.tar
 ```sh
 docker push NAME[:TAG]
 ```
+
+### Running in SWARM
+```sh
+docker service create --name nagios -p 4000:80 -p 4001:20 -t --replicas 6 hsly903/nagios:latest
+```
