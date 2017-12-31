@@ -45,5 +45,5 @@ docker push NAME[:TAG]
 
 ### Running in SWARM
 ```sh
-docker service create --name nagios -p 4000:80 -p 4001:20 -t --replicas 6 hsly903/nagios:latest
+docker service create --name nagios -p 4000:80 -p 4001:22 -t --replicas 6 hsly903/nagios:latest
 ```
