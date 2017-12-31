@@ -147,11 +147,10 @@ RUN chmod 755 /usr/local/nagios/libexec/check_ilo2_health.pl \
     /usr/local/nagios/etc/objects/test.cfg
 
 #Export service ports
-EXPOSE 80
-#EXPOSE 22  
+EXPOSE 80 22  
 
 #Export container folder
-#VOLUME "/mnt"
+VOLUME "/mnt"
 
 #ENTRYPOINT ["executable","/run.sh"]
 CMD ["/run.sh"]
