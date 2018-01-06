@@ -25,6 +25,12 @@ Copy nagios_container.ppk into Putty, then set Auto-login username: root, input 
 
 Logon Nagiosgraph http://192.168.1.100:4000/nagios
 
+After you login nagios container, you may edit file test.cfg under /usr/local/nagios/etc/objects to customized following function
+
+* NRPE
+* TCP Traffice
+* SNMP of Printer
+
 ### NOTICE
 logon account: nagiosadmin password: nagios
 
