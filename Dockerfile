@@ -1,12 +1,12 @@
 #This dockerfile uses the centos image
-#Author: docker_user
+#Author: Samson.Mei
 #Nagios core with Nagiosgraph
 
 #Basic image
 FROM centos:6.8 
 
 #Maintainer information
-MAINTAINER SamsonMei (mygithublab@126.com)
+MAINTAINER Samson.Mei (mygithublab@126.com)
 
 #Setup environment
 ENV NAGIOSADMIN_USER   nagiosadmin
@@ -55,19 +55,18 @@ RUN yum install -y \
  && yum install -y \
     perl-Net-SNMP \
     perl-Nagios-Plugin \
- && yum clean all 
+ && yum clean all \
+#Install and setup Nagios::Config perl module
+ && wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpanm Nagios::Config \
+#Prerequisties software for TCP traffice plugin
+ && cpanm Carp English File::Basename Monitoring::Plugin Monitoring::Plugin::Getopt Monitoring::Plugin::Threshold Monitoring::Plugin::Range Readonly version
  
 #Download and Install Nagios Core 4.3.4
-#Install and setup Nagios::Config perl module 
-RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpanm Nagios::Config \
 #Create User And Group
- && useradd nagios && usermod -a -G nagios apache && cd /tmp \ 
+RUN useradd nagios && usermod -a -G nagios apache && cd /tmp \
 #Downloading the Source of nagios core
  && wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.3.4.tar.gz \
-#Downloading the Source of nagiosgraph
- && wget --no-check-certificate -O nagiosgraph.tar.gz https://nchc.dl.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz \
-#Downloading the Source of nagios-plugin
- && wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz \
+#Extract nagios core tarball and navigate to nagios core folder
  && tar xzvf nagioscore.tar.gz && cd /tmp/nagioscore-nagios-4.3.4/ \
 #Compile
  && ./configure && make all \
@@ -86,14 +85,24 @@ RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpa
 #&& ip6tables -I INPUT -p tcp --destination-port 80 -j ACCEPT && service ip6tables save \
 #Create nagiosadmin User Account
  && htpasswd -bcs /usr/local/nagios/etc/htpasswd.users "${NAGIOSADMIN_USER}" "${NAGIOSADMIN_PASS}" \
+
+#Downloading the Source of nagios-plugin
+ && cd /tmp && wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz \
 #Navigate to tmp folder and extract nagios-plugin
- && cd /tmp && tar zxvf nagios-plugins.tar.gz && cd /tmp/nagios-plugins-release-2.2.1/ \
+ && tar zxvf nagios-plugins.tar.gz && cd /tmp/nagios-plugins-release-2.2.1/ \
 #Compile + Install for nagios-plugin
  && ./tools/setup && ./configure && make && make install \
-#Check and test nagios configure file
- && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
+
+#Downloading the Source of nagios NRPE
+ && cd /tmp && wget --no-check-certificate -O nrpe.tar.gz https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-3.2.1/nrpe-3.2.1.tar.gz \
+#Install the Source of nagios NRPE
+ && tar zxvf nrpe.tar.gz && cd /tmp/nrpe-3.2.1 \
+ && ./configure && make check_nrpe && make install-plugin \
+
+#Downloading the Source of nagiosgraph
+ && cd /tmp && wget --no-check-certificate -O nagiosgraph.tar.gz https://nchc.dl.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz \
 #Install the Source of nagiosgraph
- && cd /tmp && tar zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 \
+ && tar zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 \
  && ./install.pl --install                                              \
          --prefix                   /usr/local/nagiosgraph              \
          --etc-dir                  /usr/local/nagiosgraph/etc          \
@@ -110,6 +119,9 @@ RUN wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpa
 #        --nagios-perfdata-file /tmp/perfdata.log                \
 #        --nagios-cgi-url /nagiosgraph/cgi-bin                && \
  && cp share/nagiosgraph.ssi /usr/local/nagios/share/ssi/common-header.ssi \
+
+#Check and test nagios configure file
+ && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
 #Create index.html file and setup Shanghai timezone
  && touch /var/www/html/index.html && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime && rm -rf /tmp/*
 
@@ -122,6 +134,7 @@ RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys
 #Add configure file to nagios server
 ADD cfg/httpd/httpd.conf /etc/httpd/conf/httpd.conf
 ADD cfg/nagiosgraph/etc/nagiosgraph-apache.conf /usr/local/nagiosgraph/etc/nagiosgraph-apache.conf
+ADD cfg/nagiosgraph/etc/nagiosgraph.conf /usr/local/nagiosgraph/etc/nagiosgraph.conf
 ADD cfg/nagios/etc/cgi.cfg /usr/local/nagios/etc/cgi.cfg
 ADD cfg/nagios/etc/nagios.cfg /usr/local/nagios/etc/nagios.cfg
 ADD cfg/nagios/objects/commands.cfg /usr/local/nagios/etc/objects/commands.cfg
@@ -131,11 +144,16 @@ ADD cfg/nagios/objects/test.cfg /usr/local/nagios/etc/objects/test.cfg
 #Add plugin to nagios server
 ADD plugins/check_ilo2_health.pl /usr/local/nagios/libexec/check_ilo2_health.pl
 ADD plugins/check_snmp_printer /usr/local/nagios/libexec/check_snmp_printer
+ADD plugins/check_mem.pl /usr/local/nagios/libexec/check_mem.pl
+ADD plugins/check_tcptraffic /usr/local/nagios/libexec/check_tcptraffic
+
 
 #Change above file permission
 
 RUN chmod 755 /usr/local/nagios/libexec/check_ilo2_health.pl \
  && chmod 755 /usr/local/nagios/libexec/check_snmp_printer   \
+ && chmod 755 /usr/local/nagios/libexec/check_mem.pl         \
+ && chmod 755 /usr/local/nagios/libexec/check_tcptraffic     \
  && chown nagios.nagios /usr/local/nagios/etc/cgi.cfg        \
     /usr/local/nagios/etc/nagios.cfg                         \
     /usr/local/nagios/etc/objects/commands.cfg               \
