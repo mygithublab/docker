@@ -147,7 +147,6 @@ ADD plugins/check_snmp_printer /usr/local/nagios/libexec/check_snmp_printer
 ADD plugins/check_mem.pl /usr/local/nagios/libexec/check_mem.pl
 ADD plugins/check_tcptraffic /usr/local/nagios/libexec/check_tcptraffic
 
-
 #Change above file permission
 
 RUN chmod 755 /usr/local/nagios/libexec/check_ilo2_health.pl \
