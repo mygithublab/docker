@@ -161,7 +161,8 @@ RUN chmod 755 /usr/local/nagios/libexec/check_ilo2_health.pl \
     /usr/local/nagios/etc/nagios.cfg                         \
     /usr/local/nagios/etc/objects/commands.cfg               \
     /usr/local/nagios/etc/objects/templates.cfg              \
-    /usr/local/nagios/etc/objects/test.cfg
+    /usr/local/nagios/etc/objects/test.cfg                   \
+ && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
 
 #Export service ports
 EXPOSE 80 22  
