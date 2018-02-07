@@ -30,6 +30,7 @@ After you login nagios container, you may edit file test.cfg under /usr/local/na
 * NRPE
 
 * TCP Traffice
+
 Prerequisties software for TCP Traffice :
 (1)Carp
 (2)English
@@ -42,6 +43,7 @@ Prerequisties software for TCP Traffice :
 (9)version
 
 * SNMP of Printer
+
 Prerequisties software for SNMP of Printer :
 (1)net-snmp-utils-5.5-57.el6.x86_64
 (2)net-snmp-5.5-57.el6.x86_64
@@ -51,6 +53,7 @@ Prerequisties software for SNMP of Printer :
 (6)openssl-devel-1.0.1e-48.el6_8.1.x86_64
 
 * HP ILO
+
 Prerequisties software for HP ilo2 health : 
 (1)A PERL plugin using Nagios::Plugin, IO::Socket::SSL and XML::Simple. 
 
