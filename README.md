@@ -30,29 +30,29 @@ After you login nagios container, you may edit file test.cfg under /usr/local/na
 * NRPE
 
 * TCP Traffice
-** Prerequisties software for TCP Traffice :
-*** Carp
-*** English
-*** File::Basename
-*** Monitoring::Plugin
-*** Monitoring::Plugin::Getopt
-*** Monitoring::Plugin::Threshold
-*** Monitoring::Plugin::Range
-*** Readonly
-*** version
+Prerequisties software for TCP Traffice :
+(1)Carp
+(2)English
+(3)File::Basename
+(4)Monitoring::Plugin
+(5)Monitoring::Plugin::Getopt
+(6)Monitoring::Plugin::Threshold
+(7)Monitoring::Plugin::Range
+(8)Readonly
+(9)version
 
 * SNMP of Printer
-** Prerequisties software for SNMP of Printer :
-*** net-snmp-utils-5.5-57.el6.x86_64
-*** net-snmp-5.5-57.el6.x86_64
-*** net-snmp-libs-5.5-57.el6.x86_64
-*** php-snmp-5.3.3-47.el6.x86_64
-*** php-snmp-5.3.3-47.el6.x86_64
-*** openssl-devel-1.0.1e-48.el6_8.1.x86_64
+Prerequisties software for SNMP of Printer :
+(1)net-snmp-utils-5.5-57.el6.x86_64
+(2)net-snmp-5.5-57.el6.x86_64
+(3)net-snmp-libs-5.5-57.el6.x86_64
+(4)php-snmp-5.3.3-47.el6.x86_64
+(5)php-snmp-5.3.3-47.el6.x86_64
+(6)openssl-devel-1.0.1e-48.el6_8.1.x86_64
 
 * HP ILO
-** Prerequisties software for HP ilo2 health : 
-*** A PERL plugin using Nagios::Plugin, IO::Socket::SSL and XML::Simple. 
+Prerequisties software for HP ilo2 health : 
+(1)A PERL plugin using Nagios::Plugin, IO::Socket::SSL and XML::Simple. 
 
 ### NOTICE
 logon account: nagiosadmin password: nagios
