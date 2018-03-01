@@ -51,6 +51,11 @@ RUN yum install -y \
 #Prerequisties software for HP ilo2 health
     perl-XML-Simple \
     perl-IO-Socket-SSL \
+#Prerequisties software for A Nagios Plug-in for iLO Agentless Management (HPE ProLiant Server)
+    nmap \
+    procmail \
+    curl \
+    libtdb \
 ##perl-Nagios-Plugin 
  && yum install -y \
     perl-Net-SNMP \
@@ -61,9 +66,11 @@ RUN yum install -y \
 #Prerequisties software for TCP traffice plugin
  && cpanm Carp English File::Basename Monitoring::Plugin Monitoring::Plugin::Getopt Monitoring::Plugin::Threshold Monitoring::Plugin::Range Readonly version
  
-#Download and Install Nagios Core 4.3.4
+#Download and Install Nagios Core 4.3.4 and plugin
+#Add iLO Agentless Management RPM package
+ADD plugins/nagios-plugins-hpeilo-1.5.1-156.9.rhel6.x86_64.rpm /tmp
 #Create User And Group
-RUN useradd nagios && usermod -a -G nagios apache && cd /tmp \
+RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache && usermod -a -G nagios apache && cd /tmp \
 #Downloading the Source of nagios core
  && wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.3.4.tar.gz \
 #Extract nagios core tarball and navigate to nagios core folder
@@ -119,7 +126,9 @@ RUN useradd nagios && usermod -a -G nagios apache && cd /tmp \
 #        --nagios-perfdata-file /tmp/perfdata.log                \
 #        --nagios-cgi-url /nagiosgraph/cgi-bin                && \
  && cp share/nagiosgraph.ssi /usr/local/nagios/share/ssi/common-header.ssi \
-
+#Install iLO Agentless Management RPM package
+ && cd /tmp && chmod 755 /tmp/nagios-plugins-hpeilo-1.5.1-156.9.rhel6.x86_64.rpm \
+ && rpm -ivh nagios-plugins-hpeilo-1.5.1-156.9.rhel6.x86_64.rpm \
 #Check and test nagios configure file
  && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
 #Create index.html file and setup Shanghai timezone

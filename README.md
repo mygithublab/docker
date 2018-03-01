@@ -52,10 +52,21 @@ Prerequisties software for SNMP of Printer :
 (5)php-snmp-5.3.3-47.el6.x86_64
 (6)openssl-devel-1.0.1e-48.el6_8.1.x86_64
 
-* HP ILO
+* HP ILO or iLO Agentless Management (HPE ProLiant Server)
 
 Prerequisties software for HP ilo2 health : 
 (1)A PERL plugin using Nagios::Plugin, IO::Socket::SSL and XML::Simple. 
+
+Prerequisties software for iLO Agentless Management (HPE ProLiant Server) :
+(1)nmap
+(2)procmail
+(3)curl
+(4)libtdb
+(5)nagios-plugins-hpeilo-1.5.1-156.9.rhel6.x86_64.rpm
+(6)Login container to setup and add instance 
+
+https://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/Others/A-Nagios-Plug-2Din-for-iLO-Agentless-Management-%28HPE-ProLiant-Server%29/details
+
 
 ### NOTICE
 logon account: nagiosadmin password: nagios
