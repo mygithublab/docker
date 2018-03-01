@@ -52,7 +52,7 @@ Prerequisties software for SNMP of Printer :
 (5)php-snmp-5.3.3-47.el6.x86_64
 (6)openssl-devel-1.0.1e-48.el6_8.1.x86_64
 
-* HP ILO or iLO Agentless Management (HPE ProLiant Server)
+* HP ILO (less than G8) or iLO Agentless Management (G8,G9) (HPE ProLiant Server)
 
 Prerequisties software for HP ilo2 health : 
 (1)A PERL plugin using Nagios::Plugin, IO::Socket::SSL and XML::Simple. 
