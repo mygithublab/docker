@@ -176,7 +176,7 @@ RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod 
 #Check and server NagiosCore
  && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
 #Create index.html file and setup Shanghai timezone
- && touch /var/www/html/index.html && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime 
+ && touch /var/www/html/index.html && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime \ 
  && rm -rf /tmp/*
 
 #Add startup service script
