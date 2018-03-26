@@ -67,6 +67,30 @@ Prerequisties software for iLO Agentless Management (HPE ProLiant Server) :
 
 https://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/Others/A-Nagios-Plug-2Din-for-iLO-Agentless-Management-%28HPE-ProLiant-Server%29/details
 
+USAGE
+
+```sh
+/usr/local/nagios/libexec/hpeilo_nagios_config
+```
+
+* Dell EMC OpenManage Plug-in for Nagios Core
+
+Prerequisties software for Dell EMC OpenManage Plug-in
+(1)perl-Socket6
+(2)libwsman1
+(3)openwsman-perl
+(4)net-snmp-perl
+(5)snmptt
+(6)Perl Net-IP Module
+(7)Dell RACADM
+(8)java-1.8.0-openjdk
+(9)java-1.8.0-openjdk-devel
+
+USAGE
+
+```sh
+/usr/local/nagios/dell/scripts/dell_device_discovery.pl -h
+```
 
 ### NOTICE
 logon account: nagiosadmin password: nagios

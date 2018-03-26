@@ -1,20 +1,20 @@
 #This dockerfile uses the centos image
-#Author: Samson.Mei
+#Author: mygithublab@126.com
 #Nagios core with Nagiosgraph
 
 #Basic image
-FROM centos:6.8 
+FROM centos:6.8
 
 #Maintainer information
-MAINTAINER Samson.Mei (mygithublab@126.com)
+MAINTAINER mygithublab (mygithublab@126.com)
 
 #Setup environment
-ENV NAGIOSADMIN_USER   nagiosadmin
-ENV NAGIOSADMIN_PASS   nagios
+ENV NAGIOSADMIN_USER nagiosadmin
+ENV NAGIOSADMIN_PASS nagios
 
-#Install Prerequisites Software
+#Prerequisites Software
 RUN yum install -y \
-#Prerequisties software for nagios core
+#Prerequisties software for NagiosCore
     gcc \
     glibc \
     php-cli \
@@ -26,7 +26,7 @@ RUN yum install -y \
     gd \
     gd-devel \
     perl \
-#Prerequisties software for nagios-plugin 
+#Prerequisties software for NagiosPlugin 
     make \
     gettext \
     automake \
@@ -36,22 +36,22 @@ RUN yum install -y \
     net-snmp-utils \
     epel-release \
 ##perl-Net-SNMP \
-#Prerequisties software for SSH git
+#Prerequisties software for SSH Git
     openssh-server \ 
     git \
-#Prerequisties softeare for nagiosgraph
+#Prerequisties softeare for NagiosGraph
     perl-rrdtool \
     perl-GD \
     perl-CPAN \
     perl-CGI \
     perl-Time-HiRes \
-#Prerequisties software for SNMP Printer checking
+#Prerequisties software for SnmpPrinter
     php-snmp \
     bc \
-#Prerequisties software for HP ilo2 health
+#Prerequisties software for HPilo2health
     perl-XML-Simple \
     perl-IO-Socket-SSL \
-#Prerequisties software for A Nagios Plug-in for iLO Agentless Management (HPE ProLiant Server)
+#Prerequisties software for HPEProLiantServer
     nmap \
     procmail \
     curl \
@@ -60,55 +60,96 @@ RUN yum install -y \
  && yum install -y \
     perl-Net-SNMP \
     perl-Nagios-Plugin \
- && yum clean all \
+#Prerequisties software for DellEMCOpenManage
+    perl-Socket6 \
+    libwsman1 \
+    openwsman-perl \
+    net-snmp-perl \
+    snmptt \
+#Edit snmptt.ini for DellEMCOpenManage
+ && sed -i 's/dns_enable = 0/dns_enable = 1/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/net_snmp_perl_enable = 0/net_snmp_perl_enable = 1/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/translate_log_trap_oid = 0/translate_log_trap_oid = 1/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/stdout_enable = 0/stdout_enable = 1/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/log_system_enable = 0/log_system_enable = 1/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/unknown_trap_log_enable = 0/unknown_trap_log_enable = 1/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/DEBUGGING = 0/DEBUGGING = 1/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/DEBUGGING_FILE = /DEBUGGING_FILE = \/var\/log\/snmptt.debugg/g' /etc/snmp/snmptt.ini \
+ && sed -i 's/DEBUGGING_FILE_HANDLER = /DEBUGGING_FILE_HANDLER = \/var\/log\/snmptt\/snmptthandler.debug/g' /etc/snmp/snmptt.ini \
+ && sed -i '$a traphandle default \/usr\/sbin\/snmptthandler' /etc/snmp/snmptrapd.conf \
+ && sed -i '$a disableAuthorization yes' /etc/snmp/snmptrapd.conf \ 
+#Configure snmptt snmptrapd services to start on OS boot
+ && chkconfig snmptrapd on && chkconfig snmptt on && service snmptt start && service snmptrapd start \
 #Install and setup Nagios::Config perl module
  && wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpanm Nagios::Config \
-#Prerequisties software for TCP traffice plugin
- && cpanm Carp English File::Basename Monitoring::Plugin Monitoring::Plugin::Getopt Monitoring::Plugin::Threshold Monitoring::Plugin::Range Readonly version
+#Prerequisties software for TCPTraffice
+ && cpanm Carp English File::Basename Monitoring::Plugin Monitoring::Plugin::Getopt Monitoring::Plugin::Threshold Monitoring::Plugin::Range Readonly version \
+#Prerequisties software for DellEMCOpenManage - Perl Net-IP Module
+ && cd /tmp \
+ && wget http://search.cpan.org/CPAN/authors/id/M/MA/MANU/Net-IP-1.26.tar.gz \
+ && tar -zxvf Net-IP-1.26.tar.gz && cd Net-IP-1.26 \
+ && perl Makefile.PL && make && make all && make install \
+#Prerequisties software for DellEMCOpenManage - Perl Net-SNMP Module
+ && cd /tmp \
+ && wget http://search.cpan.org/CPAN/authors/id/D/DT/DTOWN/Net-SNMP-v6.0.1.tar.gz \
+ && tar -zxvf Net-SNMP-v6.0.1.tar.gz && cd Net-SNMP-v6.0.1 \
+ && perl Makefile.PL && make && make all && make install \
+#Prerequisties software for DellEMCOpenManage - DellRACADM
+ && cd /tmp \
+ && wget -q -O- http://linux.dell.com/repo/hardware/latest/bootstrap.cgi | bash \
+ && yum install -y \
+    srvadmin-idrac7 \
+    java-1.8.0-openjdk \
+    java-1.8.0-openjdk-devel \
+#Clean repo cache
+ && yum clean all
+
  
-#Download and Install Nagios Core 4.3.4 and plugin
-#Add iLO Agentless Management RPM package
+#Download to Install Nagios Core 4.3.4 and plugin
+#Add HPEProLiantServer ILO Agentless Management RPM package
+#Add DellEMCOpenManage package
 ADD plugins/nagios-plugins-hpeilo-1.5.1-156.9.rhel6.x86_64.rpm /tmp
+ADD plugins/Dell_EMC_OpenManage_Plugin_v2.1_Nagios_Core_A00.tar.gz /tmp
 #Create User And Group
 RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache && usermod -a -G nagios apache && cd /tmp \
-#Downloading the Source of nagios core
+#Downloading NagiosCore
  && wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.3.4.tar.gz \
-#Extract nagios core tarball and navigate to nagios core folder
+#Extract NagiosCore
  && tar xzvf nagioscore.tar.gz && cd /tmp/nagioscore-nagios-4.3.4/ \
-#Compile
+#Compile NagiosCore
  && ./configure && make all \
-#Install Binaries
+#Install NagiosCore
  && make install \
-#Install Service / Daemon
+#Install NagiosCore Service Daemon
  && make install-init && chkconfig --add nagios && chkconfig --level 2345 httpd on \
-#Install Command Mode
+#Install NagiosCore Command Mode
  && make install-commandmode \
-#Install Configuration Files
+#Install NagiosCore Configuration
  && make install-config \
-#Install Apache Config Files
+#Install NagiosCore ApacheConfig
  && make install-webconf \
-#Configure Firewall for Nagios Core
+#Configure Firewall for NagiosCore
 #&& iptables -I INPUT -p tcp --destination-port 80 -j ACCEPT && service iptables save \
 #&& ip6tables -I INPUT -p tcp --destination-port 80 -j ACCEPT && service ip6tables save \
-#Create nagiosadmin User Account
+#Create Nagiosadmin User Account
  && htpasswd -bcs /usr/local/nagios/etc/htpasswd.users "${NAGIOSADMIN_USER}" "${NAGIOSADMIN_PASS}" \
 
-#Downloading the Source of nagios-plugin
+#Downloading NagiosPlugin
  && cd /tmp && wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz \
-#Navigate to tmp folder and extract nagios-plugin
+#Extract NagiosPlugin
  && tar zxvf nagios-plugins.tar.gz && cd /tmp/nagios-plugins-release-2.2.1/ \
-#Compile + Install for nagios-plugin
+#Compile + Install for NagiosPlugin
  && ./tools/setup && ./configure && make && make install \
 
-#Downloading the Source of nagios NRPE
+#Downloading NagiosNRPE
  && cd /tmp && wget --no-check-certificate -O nrpe.tar.gz https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-3.2.1/nrpe-3.2.1.tar.gz \
-#Install the Source of nagios NRPE
+#Install NagiosNRPE
  && tar zxvf nrpe.tar.gz && cd /tmp/nrpe-3.2.1 \
  && ./configure && make check_nrpe && make install-plugin \
 
-#Downloading the Source of nagiosgraph
+#Downloading NagiosGraph
  && cd /tmp && wget --no-check-certificate -O nagiosgraph.tar.gz https://nchc.dl.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz \
-#Install the Source of nagiosgraph
+#Install NagiosGraph
  && tar zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 \
  && ./install.pl --install                                              \
          --prefix                   /usr/local/nagiosgraph              \
@@ -126,13 +167,17 @@ RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod 
 #        --nagios-perfdata-file /tmp/perfdata.log                \
 #        --nagios-cgi-url /nagiosgraph/cgi-bin                && \
  && cp share/nagiosgraph.ssi /usr/local/nagios/share/ssi/common-header.ssi \
-#Install iLO Agentless Management RPM package
+#Install HPEProLiantServer
  && cd /tmp && chmod 755 /tmp/nagios-plugins-hpeilo-1.5.1-156.9.rhel6.x86_64.rpm \
  && rpm -ivh nagios-plugins-hpeilo-1.5.1-156.9.rhel6.x86_64.rpm \
-#Check and test nagios configure file
+#Install DellEMCOpenManage
+ && cd /tmp/Dell_OpenManage_Plugin/Install \
+ && ./install.sh \
+#Check and server NagiosCore
  && /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg \
 #Create index.html file and setup Shanghai timezone
- && touch /var/www/html/index.html && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime && rm -rf /tmp/*
+ && touch /var/www/html/index.html && cat /usr/share/zoneinfo/Asia/Shanghai > /etc/localtime 
+ && rm -rf /tmp/*
 
 #Add startup service script
 ADD run.sh /run.sh
@@ -140,7 +185,7 @@ RUN chmod 755 /run.sh && mkdir -p /root/.ssh
 COPY authorized_keys /root/.ssh
 RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys
 
-#Add configure file to nagios server
+#Add configure file to NagiosCore
 ADD cfg/httpd/httpd.conf /etc/httpd/conf/httpd.conf
 ADD cfg/nagiosgraph/etc/nagiosgraph-apache.conf /usr/local/nagiosgraph/etc/nagiosgraph-apache.conf
 ADD cfg/nagiosgraph/etc/nagiosgraph.conf /usr/local/nagiosgraph/etc/nagiosgraph.conf
@@ -150,7 +195,7 @@ ADD cfg/nagios/objects/commands.cfg /usr/local/nagios/etc/objects/commands.cfg
 ADD cfg/nagios/objects/templates.cfg /usr/local/nagios/etc/objects/templates.cfg
 ADD cfg/nagios/objects/test.cfg /usr/local/nagios/etc/objects/test.cfg
 
-#Add plugin to nagios server
+#Add plugin to NagiosCore
 ADD plugins/check_ilo2_health.pl /usr/local/nagios/libexec/check_ilo2_health.pl
 ADD plugins/check_snmp_printer /usr/local/nagios/libexec/check_snmp_printer
 ADD plugins/check_mem.pl /usr/local/nagios/libexec/check_mem.pl
